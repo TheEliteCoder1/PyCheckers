@@ -213,7 +213,7 @@ def get_moveable_places(matrix, turn, square_x, square_y, king):
                                                             if not type(square.occupant) == Piece:
                                                                 moveable_places.append(ne)
                                             else:
-                                                moveable_places.append((square.x, square.y))
+                                                moveable_places.append(ne)
                                     
                 else:
                     moveable_places.append((square.x, square.y))
@@ -233,29 +233,29 @@ def get_moveable_places(matrix, turn, square_x, square_y, king):
                                 if not type(square.occupant) == Piece:
                                     moveable_places.append(nw)
                                     if turn == 'yellow':
-                                        ne_x_pos = nw[0] + 1
-                                        ne_y_pos = nw[1] - 1
+                                        nw_x_pos = nw[0] + 1
+                                        nw_y_pos = nw[1] - 1
                                     if turn == 'blue':
-                                        ne_x_pos = nw[0] + 1
-                                        ne_y_pos = nw[1] + 1
-                                    ne = (ne_x_pos, ne_y_pos)
+                                        nw_x_pos = nw[0] + 1
+                                        nw_y_pos = nw[1] + 1
+                                    new= (nw_x_pos, nw_y_pos)
                                     for square in matrix:
                                         if square.x == nw[0] and square.y == nw[1]:
                                             if type(square.occupant) == Piece:
                                                 if square.occupant.color == eval(Opposite(turn)):
                                                     if turn == 'yellow':
-                                                        ne_x_pos = square.x + 1
-                                                        ne_y_pos = square.y - 1
+                                                        nw_x_pos = square.x + 1
+                                                        nw_y_pos = square.y - 1
                                                     if turn == 'blue':
-                                                        ne_x_pos = square.x + 1
-                                                        ne_y_pos = square.y + 1
-                                                    nw = (ne_x_pos, ne_y_pos)
+                                                        nw_x_pos = square.x + 1
+                                                        nw_y_pos = square.y + 1
+                                                    nw = (nw_x_pos, nw_y_pos)
                                                     for square in matrix:
-                                                        if square.x == ne[0] and square.y == ne[1]:
+                                                        if square.x == nw[0] and square.y == nw[1]:
                                                             if not type(square.occupant) == Piece:
-                                                                moveable_places.append(ne)
+                                                                moveable_places.append(nw)
                                             else:
-                                                moveable_places.append((square.x, square.y))
+                                                moveable_places.append(nw)
                        
                 else:
                     moveable_places.append((square.x, square.y))
