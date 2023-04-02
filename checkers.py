@@ -179,91 +179,26 @@ def get_moveable_places(matrix, turn, square_x, square_y, king):
             if square.x == ne[0] and square.y == ne[1]:
                 if type(square.occupant) == Piece:
                     if square.occupant.color == eval(Opposite(turn)):
-                        if turn == 'yellow':
-                            ne_x_pos = square.x - 1
-                            ne_y_pos = square.y - 1
-                        if turn == 'blue':
-                            ne_x_pos = square.x - 1
-                            ne_y_pos = square.y + 1
-                        ne = (ne_x_pos, ne_y_pos)
-                        for square in matrix:
-                            if square.x == ne[0] and square.y == ne[1]:
-                                if not type(square.occupant) == Piece:
-                                    moveable_places.append(ne)
-                                    if turn == 'yellow':
-                                        ne_x_pos = ne[0] - 1
-                                        ne_y_pos = ne[1] - 1
-                                    if turn == 'blue':
-                                        ne_x_pos = ne[0] - 1
-                                        ne_y_pos = ne[1] + 1
-                                    ne = (ne_x_pos, ne_y_pos)
-                                    for square in matrix:
-                                        if square.x == ne[0] and square.y == ne[1]:
-                                            if type(square.occupant) == Piece:
-                                                if square.occupant.color == eval(Opposite(turn)):
-                                                    if turn == 'yellow':
-                                                        ne_x_pos = square.x - 1
-                                                        ne_y_pos = square.y - 1
-                                                    if turn == 'blue':
-                                                        ne_x_pos = square.x - 1
-                                                        ne_y_pos = square.y + 1
-                                                    ne = (ne_x_pos, ne_y_pos)
-                                                    for square in matrix:
-                                                        if square.x == ne[0] and square.y == ne[1]:
-                                                            if not type(square.occupant) == Piece:
-                                                                moveable_places.append(ne)
-                                            else:
-                                                moveable_places.append(ne)
-                                    
+                        moveable_places.append(ne)              
                 else:
                     moveable_places.append((square.x, square.y))
             if square.x == nw[0] and square.y == nw[1]:
                 if type(square.occupant) == Piece:
                     if square.occupant.color == eval(Opposite(turn)):
-                        # if occupied by other side, move it to consecutive square
-                        if turn == 'yellow':
-                            nw_x_pos = square.x + 1
-                            nw_y_pos = square.y - 1
-                        if turn == 'blue':
-                            nw_x_pos = square.x + 1
-                            nw_y_pos = square.y + 1
-                        nw = (nw_x_pos, nw_y_pos)
-                        for square in matrix:
-                            if square.x == nw[0] and square.y == nw[1]:
-                                if not type(square.occupant) == Piece:
-                                    moveable_places.append(nw)
-                                    if turn == 'yellow':
-                                        nw_x_pos = nw[0] + 1
-                                        nw_y_pos = nw[1] - 1
-                                    if turn == 'blue':
-                                        nw_x_pos = nw[0] + 1
-                                        nw_y_pos = nw[1] + 1
-                                    new= (nw_x_pos, nw_y_pos)
-                                    for square in matrix:
-                                        if square.x == nw[0] and square.y == nw[1]:
-                                            if type(square.occupant) == Piece:
-                                                if square.occupant.color == eval(Opposite(turn)):
-                                                    if turn == 'yellow':
-                                                        nw_x_pos = square.x + 1
-                                                        nw_y_pos = square.y - 1
-                                                    if turn == 'blue':
-                                                        nw_x_pos = square.x + 1
-                                                        nw_y_pos = square.y + 1
-                                                    nw = (nw_x_pos, nw_y_pos)
-                                                    for square in matrix:
-                                                        if square.x == nw[0] and square.y == nw[1]:
-                                                            if not type(square.occupant) == Piece:
-                                                                moveable_places.append(nw)
-                                            else:
-                                                moveable_places.append(nw)
-                       
+                        moveable_places.append(nw)
                 else:
                     moveable_places.append((square.x, square.y))
                 
                 
         return moveable_places
     else:
-        return []
+        for square in matrix:
+            if square.x < 8 and square.y < 8:
+                # if the next square is northeast, then add it
+                if turn == yellow:
+                    if matrix[matrix.index(square)+1].x == square_x - 1:
+                        if matrix[matrix.index(square)+1].x == square_y - 1:
+                            moveable_places.append((square.x, square.y))
                 
         
         
@@ -346,7 +281,7 @@ if turn == "yellow":
     turn_label_location = (20, 360)
     time_label_location = (20, 320)
     turn.capitalize()
-    turn_label = Label(f"{turn}", turn_label_location, fg=label_color, bg=black)
+    turn_label = Label(f"{turn}", turn_label_location, fg=label_color)
     turn_label.update()
     time_label = Label(f"Time: {yellow_seconds}s", time_label_location, fg=label_color)
     time_label.update()
@@ -397,8 +332,13 @@ while run:
                                     if (sq.x, sq.y) == (place[0], place[1]):
                                         # if the place is empty
                                         # then move the piece
-                                        if type(sq.occupant) != Piece:
+                                        if type(sq.occupant) != Piece: 
                                             sq.occupant = square.occupant
+                                            # check for kinging
+                                            if sq.y == 0 and square.occupant.color == yellow:
+                                                sq.occupant.king = True
+                                            if sq.y == 7 and square.occupant.color == blue:
+                                                sq.occupant.king = True
                                             square.occupant = None
                                             selected_piece = None
                                             moveable_places = None
@@ -419,6 +359,11 @@ while run:
                                                     blue_count_label = Label(f"x {blue_count}", (5, 240), fg=green, bg=white, font_size=35)
                                                     blue_count_label.update()
                                                 sq.occupant = square.occupant
+                                                # check for kinging
+                                                if sq.y == 0 and square.occupant.color == yellow:
+                                                    sq.occupant.king = True
+                                                if sq.y == 7 and square.occupant.color == blue:
+                                                    sq.occupant.king = True
                                                 square.occupant = None
                                                 selected_piece = None
                                                 moveable_places = None
@@ -455,7 +400,7 @@ while run:
                 turn_label_location = (20, 40)
                 time_label_location = (20, 10)
                 turn.capitalize()
-                turn_label = Label(f"{turn}", turn_label_location, fg=label_color, bg=black)
+                turn_label = Label(f"{turn}", turn_label_location, fg=label_color)
                 turn_label.update() 
                 time_label = Label(f"Time: {blue_seconds}s", time_label_location, fg=label_color)
                 time_label.update()
@@ -470,7 +415,7 @@ while run:
                 turn_label_location = (20, 360)
                 time_label_location = (20, 320)
                 turn.capitalize()
-                turn_label = Label(f"{turn}", turn_label_location, fg=label_color, bg=black)
+                turn_label = Label(f"{turn}", turn_label_location, fg=label_color)
                 turn_label.update()
                 time_label = Label(f"Time: {yellow_seconds}s", time_label_location, fg=label_color)
                 time_label.update()
